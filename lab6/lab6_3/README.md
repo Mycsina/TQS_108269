@@ -1,0 +1,1 @@
+a) Em primeira análise, não há nenhuma issue em nenhum dos pontos, havendo uma coverage de 74.1%, com 56 linhas não cobertas. Há também 370 linhas duplicadas, um total de 14.6%
