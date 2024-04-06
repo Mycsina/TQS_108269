@@ -12,4 +12,7 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
 
     @Query("select r from Route r where r.from_city.id = ?1")
     List<Route> findByFrom_city_Id(Long id);
+
+    @Query("select r from Route r where r.from_city.id = ?1 and r.to_city.id = ?2")
+    List<Route> findByFrom_city_IdAndTo_city_Id(Long fromId, Long toId);
 }

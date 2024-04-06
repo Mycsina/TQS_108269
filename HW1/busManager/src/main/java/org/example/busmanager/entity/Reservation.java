@@ -29,9 +29,6 @@ public class Reservation {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "seat")
-    private Integer seat;
-
     @OneToMany(mappedBy = "reservation", orphanRemoval = true)
     @ToString.Exclude
     private Set<Seat> seats = new LinkedHashSet<>();

@@ -1,37 +1,32 @@
 package org.example.busmanager.controller;
 
-import org.example.busmanager.entity.Bus;
 import org.example.busmanager.entity.Route;
-import org.example.busmanager.service.BusService;
 import org.example.busmanager.service.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
+@RequestMapping("/route")
 @RestController
-@RequestMapping("/search")
-public class BusSearchController {
-    private final BusService busService;
+public class RouteController {
     private final RouteService routeService;
 
     @Autowired
-    public BusSearchController(BusService busService, RouteService routeService) {
-        this.busService = busService;
+    public RouteController(RouteService routeService) {
         this.routeService = routeService;
     }
 
-    @GetMapping("/buses")
-    public List<Bus> getBuses(@RequestParam("departure") String departure, @RequestParam("arrival") String arrival) {
+    @GetMapping("/search")
+    public ResponseEntity<List<Route>> getRoutesByDepartureCityAndArrivalCity(
+            @RequestParam("departure") String departure,
+            @RequestParam("arrival") String arrival
+    ) {
         List<Route> routes = routeService.getRoutesByDepartureCityAndArrivalCity(departure, arrival);
-        List<Bus> buses = new ArrayList<>();
-        for (Route route : routes) {
-            buses.addAll(busService.getBusesByRoute(route));
-        }
-        return buses;
+        return ResponseEntity.ok(routes);
     }
 }

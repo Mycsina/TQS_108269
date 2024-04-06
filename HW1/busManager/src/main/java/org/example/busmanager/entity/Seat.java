@@ -22,10 +22,6 @@ public class Seat {
     private Integer number;
 
     @ManyToOne
-    @JoinColumn(name = "bus_id")
-    private Bus bus;
-
-    @ManyToOne
     @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 

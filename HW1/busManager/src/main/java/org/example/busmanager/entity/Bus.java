@@ -28,10 +28,6 @@ public class Bus {
 
     @OneToMany(mappedBy = "bus", orphanRemoval = true)
     @ToString.Exclude
-    private Set<Seat> seats = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "bus", orphanRemoval = true)
-    @ToString.Exclude
     private Set<Reservation> reservations = new LinkedHashSet<>();
 
     @ManyToOne

@@ -28,4 +28,10 @@ public class RouteService {
         City arrival = cityService.getCityByName(city);
         return routeRepository.findByTo_city_Id(arrival.getId());
     }
+
+    public List<Route> getRoutesByDepartureCityAndArrivalCity(String departureCity, String arrivalCity) {
+        City departure = cityService.getCityByName(departureCity);
+        City arrival = cityService.getCityByName(arrivalCity);
+        return routeRepository.findByFrom_city_IdAndTo_city_Id(departure.getId(), arrival.getId());
+    }
 }
