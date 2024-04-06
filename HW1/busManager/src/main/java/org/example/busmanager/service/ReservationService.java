@@ -17,10 +17,10 @@ public class ReservationService {
     }
 
     public Reservation createReservation(String name, String phone, String email) {
-        Reservation reservation = new Reservation();
-        reservation.setName(name);
-        reservation.setPhone(phone);
-        reservation.setEmail(email);
+        Reservation reservation = new Reservation()
+                .name(name)
+                .phone(phone)
+                .email(email);
         return reservationRepository.save(reservation);
     }
 

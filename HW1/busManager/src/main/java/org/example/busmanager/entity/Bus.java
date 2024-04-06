@@ -1,13 +1,18 @@
 package org.example.busmanager.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Accessors(chain = true, fluent = true)
 @Getter
 @Setter
 @ToString
@@ -42,7 +47,7 @@ public class Bus {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         Bus bus = (Bus) o;
-        return getId() != null && Objects.equals(getId(), bus.getId());
+        return id() != null && Objects.equals(id(), bus.id());
     }
 
     @Override

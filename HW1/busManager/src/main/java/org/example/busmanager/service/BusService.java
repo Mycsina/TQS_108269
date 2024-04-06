@@ -26,14 +26,14 @@ public class BusService {
     }
 
     public int getMaximumSeatsCount(Bus bus) {
-        return bus.getSeat_count();
+        return bus.seat_count();
     }
 
     public List<Integer> getTakenSeatNumbers(Bus bus) {
         List<Integer> takenSeats = new ArrayList<>();
-        for (Reservation res : bus.getReservations()) {
-            for (Seat seat : res.getSeats()) {
-                takenSeats.add(seat.getNumber());
+        for (Reservation res : bus.reservations()) {
+            for (Seat seat : res.seats()) {
+                takenSeats.add(seat.number());
             }
         }
         return takenSeats;
@@ -41,7 +41,7 @@ public class BusService {
 
     public List<Integer> getAvailableSeatNumbers(Bus bus) {
         List<Integer> allSeats = new ArrayList<>();
-        for (int i = 1; i <= bus.getSeat_count(); i++) {
+        for (int i = 1; i <= bus.seat_count(); i++) {
             allSeats.add(i);
         }
         List<Integer> reservedSeats = getTakenSeatNumbers(bus);

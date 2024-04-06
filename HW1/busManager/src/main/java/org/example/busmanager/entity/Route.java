@@ -2,6 +2,7 @@ package org.example.busmanager.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.Accessors;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.sql.Date;
@@ -9,6 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+@Accessors(chain = true, fluent = true)
 @Getter
 @Setter
 @ToString
@@ -47,7 +49,7 @@ public class Route {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         Route route = (Route) o;
-        return getId() != null && Objects.equals(getId(), route.getId());
+        return id() != null && Objects.equals(id(), route.id());
     }
 
     @Override

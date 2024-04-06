@@ -34,11 +34,9 @@ public class RepositoryTests {
 
     @Test
     void whenFindBusById_thenReturnBus() {
-        Bus bus = new Bus();
-        bus.setName("65");
-        bus.setSeat_count(50);
+        Bus bus = new Bus().name("65").seat_count(50);
         entityManager.persistAndFlush(bus);
-        Bus found = busRepository.findById(bus.getId()).orElseThrow();
+        Bus found = busRepository.findById(bus.id()).orElseThrow();
         assertThat(found, is(equalTo(bus)));
     }
 
@@ -50,11 +48,9 @@ public class RepositoryTests {
 
     @Test
     void whenFindCityByName_thenReturnCity() {
-        City city = new City();
-        city.setName("New York");
-        city.setCountry("USA");
+        City city = new City().name("New York").country("USA");
         entityManager.persistAndFlush(city);
-        City found = cityRepository.findByName(city.getName()).orElseThrow();
+        City found = cityRepository.findByName(city.name()).orElseThrow();
         assertThat(found, is(equalTo(city)));
     }
 
@@ -66,14 +62,12 @@ public class RepositoryTests {
 
     @Test
     void whenFindRouteByDepartureCity_thenReturnRoute() {
-        City city = new City();
-        city.setName("New York");
-        city.setCountry("USA");
+        City city = new City().name("New York").country("USA");
         entityManager.persistAndFlush(city);
         Route route = new Route();
-        route.setFrom_city(city);
+        route.from_city(city);
         entityManager.persistAndFlush(route);
-        List<Route> found = routeRepository.findByFrom_city_Id(city.getId());
+        List<Route> found = routeRepository.findByFrom_city_Id(city.id());
         assertThat(found, hasItem(route));
     }
 
@@ -85,30 +79,21 @@ public class RepositoryTests {
 
     @Test
     void whenFindRouteByDepartureAndArrivalCity_thenReturnRoute() {
-        City fromCity = new City();
-        fromCity.setName("New York");
-        fromCity.setCountry("USA");
+        City fromCity = new City().name("New York").country("USA");
         entityManager.persistAndFlush(fromCity);
-        City toCity = new City();
-        toCity.setName("Los Angeles");
-        toCity.setCountry("USA");
+        City toCity = new City().name("Los Angeles").country("USA");
         entityManager.persistAndFlush(toCity);
-        Route route = new Route();
-        route.setFrom_city(fromCity);
-        route.setTo_city(toCity);
+        Route route = new Route().from_city(fromCity).to_city(toCity);
         entityManager.persistAndFlush(route);
-        List<Route> found = routeRepository.findByFrom_city_IdAndTo_city_Id(fromCity.getId(), toCity.getId());
+        List<Route> found = routeRepository.findByFrom_city_IdAndTo_city_Id(fromCity.id(), toCity.id());
         assertThat(found, hasItem(route));
     }
 
     @Test
     void whenFindReservationsByBus_thenReturnReservations() {
-        Bus bus = new Bus();
-        bus.setName("65");
-        bus.setSeat_count(50);
+        Bus bus = new Bus().name("65").seat_count(50);
         entityManager.persistAndFlush(bus);
-        Reservation reservation = new Reservation();
-        reservation.setBus(bus);
+        Reservation reservation = new Reservation().bus(bus);
         entityManager.persistAndFlush(reservation);
         List<Reservation> found = reservationRepository.findByBus(bus);
         assertThat(found, hasItem(reservation));
@@ -126,16 +111,11 @@ public class RepositoryTests {
 
     @Test
     void whenFindSeatsByReservation_thenReturnSeats() {
-        Bus bus = new Bus();
-        bus.setName("65");
-        bus.setSeat_count(50);
+        Bus bus = new Bus().name("65").seat_count(50);
         entityManager.persistAndFlush(bus);
-        Reservation reservation = new Reservation();
-        reservation.setBus(bus);
+        Reservation reservation = new Reservation().bus(bus);
         entityManager.persistAndFlush(reservation);
-        Seat seat = new Seat();
-        seat.setNumber(1);
-        seat.setReservation(reservation);
+        Seat seat = new Seat().number(1).reservation(reservation);
         entityManager.persistAndFlush(seat);
         List<Seat> found = seatRepository.findByReservation(reservation);
         assertThat(found, hasItem(seat));
@@ -143,8 +123,7 @@ public class RepositoryTests {
 
     @Test
     void whenSeatDoesNotHaveReservation_thenConfirmConstraintFail() {
-        Seat seat = new Seat();
-        seat.setNumber(1);
+        Seat seat = new Seat().number(1);
         try {
             entityManager.persistAndFlush(seat);
         } catch (Exception e) {

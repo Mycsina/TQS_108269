@@ -16,9 +16,9 @@ public class SeatService {
     }
 
     public void reserveSeat(int seatNum, Reservation reservation) {
-        Seat seat = new Seat();
-        seat.setNumber(seatNum);
-        seat.setReservation(reservation);
+        Seat seat = new Seat()
+                .number(seatNum)
+                .reservation(reservation);
         seatRepository.save(seat);
     }
 }

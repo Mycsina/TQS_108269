@@ -21,17 +21,17 @@ public class RouteService {
 
     public List<Route> getRoutesByDepartureCity(String city) {
         City departure = cityService.getCityByName(city);
-        return routeRepository.findByFrom_city_Id(departure.getId());
+        return routeRepository.findByFrom_city_Id(departure.id());
     }
 
     public List<Route> getRoutesByArrivalCity(String city) {
         City arrival = cityService.getCityByName(city);
-        return routeRepository.findByTo_city_Id(arrival.getId());
+        return routeRepository.findByTo_city_Id(arrival.id());
     }
 
     public List<Route> getRoutesByDepartureCityAndArrivalCity(String departureCity, String arrivalCity) {
         City departure = cityService.getCityByName(departureCity);
         City arrival = cityService.getCityByName(arrivalCity);
-        return routeRepository.findByFrom_city_IdAndTo_city_Id(departure.getId(), arrival.getId());
+        return routeRepository.findByFrom_city_IdAndTo_city_Id(departure.id(), arrival.id());
     }
 }
