@@ -4,11 +4,13 @@ import org.example.busmanager.entity.Route;
 import org.example.busmanager.service.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RequestMapping("/route")
@@ -29,5 +31,15 @@ public class RouteController {
         List<Route> routes = routeService.getRoutesByDepartureCityAndArrivalCity(departure, arrival);
         var response = ResponseEntity.ok(routes);
         return ResponseEntity.ok(routes);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Route> addRoute(@RequestParam String departure, @RequestParam String arrival, @RequestParam String departureCity, @RequestParam String arrivalCity) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
+        Instant date_dept = LocalDateTime.parse(departure, formatter).toInstant(ZoneOffset.UTC);
+        Instant date_arr = LocalDateTime.parse(arrival, formatter).toInstant(ZoneOffset.UTC);
+
+        Route route = routeService.createRoute(date_dept, date_arr, departureCity, arrivalCity);
+        return ResponseEntity.ok(route);
     }
 }

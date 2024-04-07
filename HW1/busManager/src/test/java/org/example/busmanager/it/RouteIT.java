@@ -40,19 +40,19 @@ public class RouteIT {
 
     @Test
     void testGetRoutesByDepartureCityAndArrivalCity() {
-        City city1 = new City().name("City1").country("Country1");
-        City city2 = new City().name("City2").country("Country2");
-        Route route = new Route().from_city(city1).to_city(city2);
-        when(routeService.getRoutesByDepartureCityAndArrivalCity(city1.name(), city2.name())).thenReturn(List.of(route));
+        City city1 = new City().setName("City1").setCountry("Country1");
+        City city2 = new City().setName("City2").setCountry("Country2");
+        Route route = new Route().setFrom_city(city1).setTo_city(city2);
+        when(routeService.getRoutesByDepartureCityAndArrivalCity(city1.getName(), city2.getName())).thenReturn(List.of(route));
 
         RestAssuredMockMvc.given()
-                .param("departure", city1.name())
-                .param("arrival", city2.name())
+                .param("departure", city1.getName())
+                .param("arrival", city2.getName())
                 .when()
                 .get("/route/search")
                 .then()
                 .statusCode(200)
-                .body("[0].from_city.name", equalTo(city1.name()))
-                .body("[0].to_city.name", equalTo(city2.name()));
+                .body("[0].from_city.name", equalTo(city1.getName()))
+                .body("[0].to_city.name", equalTo(city2.getName()));
     }
 }

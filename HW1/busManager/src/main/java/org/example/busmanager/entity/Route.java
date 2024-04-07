@@ -10,7 +10,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Accessors(chain = true, fluent = true)
+@Accessors(chain = true)
 @Getter
 @Setter
 @ToString
@@ -24,10 +24,10 @@ public class Route {
     private Long id;
 
     @Column(name = "dept_time")
-    private Date departure;
+    private Long departure;
 
     @Column(name = "arrival_time")
-    private Date arrival;
+    private Long arrival;
 
     @ManyToOne
     @JoinColumn(name = "from_city_id")
@@ -49,7 +49,7 @@ public class Route {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         Route route = (Route) o;
-        return id() != null && Objects.equals(id(), route.id());
+        return getId() != null && Objects.equals(getId(), route.getId());
     }
 
     @Override

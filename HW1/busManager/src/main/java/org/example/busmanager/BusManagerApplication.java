@@ -26,7 +26,6 @@ public class BusManagerApplication {
         SpringApplication.run(BusManagerApplication.class, args);
     }
 
-    @Bean
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("driverClassName")));
@@ -34,11 +33,6 @@ public class BusManagerApplication {
         dataSource.setUsername(env.getProperty("user"));
         dataSource.setPassword(env.getProperty("password"));
         return dataSource;
-    }
-
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
     }
 
 }

@@ -22,9 +22,9 @@ public class ReservationService {
 
     public Reservation createReservation(String name, String phone, String email) {
         Reservation reservation = new Reservation()
-                .name(name)
-                .phone(phone)
-                .email(email);
+                .setName(name)
+                .setPhone(phone)
+                .setEmail(email);
         return reservationRepository.save(reservation);
     }
 

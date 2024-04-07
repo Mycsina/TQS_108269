@@ -31,8 +31,8 @@ public class CityIT {
 
     @Test
     void whenGetCities_thenReturnCities() {
-        City city = new City().name("New York").country("USA");
-        City city2 = new City().name("Los Angeles").country("USA");
+        City city = new City().setName("New York").setCountry("USA");
+        City city2 = new City().setName("Los Angeles").setCountry("USA");
         when(cityService.getAllCities()).thenReturn(List.of(city, city2));
 
         RestAssuredMockMvc

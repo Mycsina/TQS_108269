@@ -9,7 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Accessors(chain = true, fluent = true)
+@Accessors(chain = true)
 @Getter
 @Setter
 @ToString
@@ -44,7 +44,7 @@ public class City {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         City city = (City) o;
-        return id() != null && Objects.equals(id(), city.id());
+        return getId() != null && Objects.equals(getId(), city.getId());
     }
 
     @Override

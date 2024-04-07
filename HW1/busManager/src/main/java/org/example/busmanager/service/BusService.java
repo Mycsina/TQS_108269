@@ -27,17 +27,26 @@ public class BusService {
         this.reservationService = reservationService;
     }
 
+    public List<Bus> getBusByDepartureCityAndArrivalCity(String departure, String arrival) {
+        List<Route> routes = routeService.getRoutesByDepartureCityAndArrivalCity(departure, arrival);
+        List<Bus> buses = new ArrayList<>();
+        for (Route route : routes) {
+            buses.addAll(busRepository.findByRoute(route));
+        }
+        return buses;
+    }
+
     public int getMaximumSeatsCount(Bus bus) {
-        return bus.seat_count();
+        return bus.getSeat_count();
     }
 
     public void createReservation(Bus bus, String name, String phone, String email, int... seatNumbers) {
-        Reservation reservation = new Reservation().name(name).phone(phone).email(email);
+        Reservation reservation = new Reservation().setName(name).setPhone(phone).setEmail(email);
         createReservation(bus, reservation, seatNumbers);
     }
 
     public void createReservation(Bus bus, Reservation reservation, int... seatNumbers) {
-        reservation.bus(bus);
+        reservation.setBus(bus);
         reservationService.saveReservation(reservation);
         if (getAvailableSeatNumbers(bus).size() < seatNumbers.length) {
             throw new IllegalArgumentException("Not enough available seats");
@@ -47,9 +56,9 @@ public class BusService {
 
     public List<Integer> getTakenSeatNumbers(Bus bus) {
         List<Integer> takenSeats = new ArrayList<>();
-        for (Reservation res : bus.reservations()) {
-            for (Seat seat : res.seats()) {
-                takenSeats.add(seat.number());
+        for (Reservation res : bus.getReservations()) {
+            for (Seat seat : res.getSeats()) {
+                takenSeats.add(seat.getNumber());
             }
         }
         return takenSeats;
@@ -57,7 +66,7 @@ public class BusService {
 
     public List<Integer> getAvailableSeatNumbers(Bus bus) {
         List<Integer> allSeats = new ArrayList<>();
-        for (int i = 1; i <= bus.seat_count(); i++) {
+        for (int i = 1; i <= bus.getSeat_count(); i++) {
             allSeats.add(i);
         }
         List<Integer> reservedSeats = getTakenSeatNumbers(bus);
@@ -95,7 +104,9 @@ public class BusService {
         return busRepository.findAll();
     }
 
-    public void addBus(Bus bus) {
+    public void addBus(Bus bus, Long routeId) {
+        Route route = routeService.getRouteById(routeId);
+        bus.setRoute(route);
         busRepository.save(bus);
     }
 

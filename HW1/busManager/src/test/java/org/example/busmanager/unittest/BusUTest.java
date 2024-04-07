@@ -33,14 +33,14 @@ public class BusUTest {
     private RouteRepository routeRepository;
     @Mock
     private SeatRepository seatRepository;
-    @Mock
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private ReservationService reservationService;
     @InjectMocks
     private BusService busService;
 
     @BeforeEach
     public void setUp() {
-        Bus bus = new Bus().name("Bus1").seat_count(5);
+        Bus bus = new Bus().setName("Bus1").setSeat_count(5);
 
         when(busRepository.findById(1L)).thenReturn(java.util.Optional.of(bus));
         when(busRepository.findById(-1L)).thenThrow(new NoSuchElementException());
@@ -50,7 +50,7 @@ public class BusUTest {
     @Test
     void whenFindBusById_thenReturnBus() {
         Bus bus = busService.getBusById(1L);
-        assertThat(bus.name(), is(equalTo("Bus1")));
+        assertThat(bus.getName(), is(equalTo("Bus1")));
         verify(busRepository, times(1)).findById(1L);
     }
 
@@ -68,9 +68,9 @@ public class BusUTest {
     void whenNoAvailableSeats_thenFailReservation() {
         Bus bus = busService.getBusById(1L);
         Reservation reservation = new Reservation()
-                .name("John")
-                .phone("123456789")
-                .email("text@example.com");
+                .setName("John")
+                .setPhone("123456789")
+                .setEmail("text@example.com");
         try {
             busService.createReservation(bus, reservation, 1, 2, 3, 4, 5, 6);
         } catch (IllegalArgumentException e) {
@@ -82,9 +82,9 @@ public class BusUTest {
     void whenAvailableSeats_thenCreateReservation() {
         Bus bus = busService.getBusById(1L);
         Reservation reservation = new Reservation()
-                .name("John")
-                .phone("123456789")
-                .email("test@example.com");
+                .setName("John")
+                .setPhone("123456789")
+                .setEmail("test@example.com");
         busService.createReservation(bus, reservation, 1, 2, 3, 4, 5);
         verify(reservationService, times(1)).saveReservation(any(Reservation.class));
     }

@@ -12,7 +12,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Accessors(chain = true, fluent = true)
+@Accessors(chain = true)
 @Getter
 @Setter
 @ToString
@@ -31,7 +31,7 @@ public class Bus {
     @Column(name = "seats")
     private Integer seat_count;
 
-    @OneToMany(mappedBy = "bus", orphanRemoval = true)
+    @OneToMany(mappedBy = "bus", orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<Reservation> reservations = new LinkedHashSet<>();
 
@@ -47,7 +47,7 @@ public class Bus {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         Bus bus = (Bus) o;
-        return id() != null && Objects.equals(id(), bus.id());
+        return getId() != null && Objects.equals(getId(), bus.getId());
     }
 
     @Override
