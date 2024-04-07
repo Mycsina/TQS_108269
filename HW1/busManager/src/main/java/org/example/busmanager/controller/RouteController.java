@@ -27,6 +27,7 @@ public class RouteController {
             @RequestParam("arrival") String arrival
     ) {
         List<Route> routes = routeService.getRoutesByDepartureCityAndArrivalCity(departure, arrival);
+        var response = ResponseEntity.ok(routes);
         return ResponseEntity.ok(routes);
     }
 }
