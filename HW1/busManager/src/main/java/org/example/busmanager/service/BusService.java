@@ -17,16 +17,32 @@ public class BusService {
     private final BusRepository busRepository;
     private final RouteService routeService;
     private final SeatService seatService;
+    private final ReservationService reservationService;
 
     @Autowired
-    public BusService(BusRepository busRepository, RouteService routeService, SeatService seatService) {
+    public BusService(BusRepository busRepository, RouteService routeService, SeatService seatService, ReservationService reservationService) {
         this.busRepository = busRepository;
         this.routeService = routeService;
         this.seatService = seatService;
+        this.reservationService = reservationService;
     }
 
     public int getMaximumSeatsCount(Bus bus) {
         return bus.seat_count();
+    }
+
+    public void createReservation(Bus bus, String name, String phone, String email, int... seatNumbers) {
+        Reservation reservation = new Reservation().name(name).phone(phone).email(email);
+        createReservation(bus, reservation, seatNumbers);
+    }
+
+    public void createReservation(Bus bus, Reservation reservation, int... seatNumbers) {
+        reservation.bus(bus);
+        reservationService.saveReservation(reservation);
+        if (getAvailableSeatNumbers(bus).size() < seatNumbers.length) {
+            throw new IllegalArgumentException("Not enough available seats");
+        }
+        reservationService.addSeats(reservation, seatNumbers);
     }
 
     public List<Integer> getTakenSeatNumbers(Bus bus) {

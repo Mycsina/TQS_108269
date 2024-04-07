@@ -16,6 +16,10 @@ public class ReservationService {
         this.seatService = seatService;
     }
 
+    public Reservation saveReservation(Reservation reservation) {
+        return reservationRepository.save(reservation);
+    }
+
     public Reservation createReservation(String name, String phone, String email) {
         Reservation reservation = new Reservation()
                 .name(name)
