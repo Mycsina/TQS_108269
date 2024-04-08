@@ -4,7 +4,8 @@ import org.example.busmanager.CurrencyRequester;
 import org.example.busmanager.entity.CurrencyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.Collection;
 
 @Service
 public class CurrencyService {
@@ -19,15 +20,20 @@ public class CurrencyService {
     public double convertCurrency(double amount, String from, String to) {
         CurrencyResponse currencyResponse = requester.getLatestCurrencyRates();
         double fromRate = currencyResponse.rates().stream()
-                .filter(rate -> rate.currency().equals(from))
-                .mapToDouble(CurrencyResponse.Rate::rate)
+                .filter(rate -> rate.getCurrency().equals(from))
+                .mapToDouble(CurrencyResponse.Rate::getRate)
                 .findFirst()
                 .orElseThrow();
         double toRate = currencyResponse.rates().stream()
-                .filter(rate -> rate.currency().equals(to))
-                .mapToDouble(CurrencyResponse.Rate::rate)
+                .filter(rate -> rate.getCurrency().equals(to))
+                .mapToDouble(CurrencyResponse.Rate::getRate)
                 .findFirst()
                 .orElseThrow();
         return amount * toRate / fromRate;
+    }
+
+    public Collection<CurrencyResponse.Rate> getAvailableCurrencies() {
+        CurrencyResponse currencyResponse = requester.getLatestCurrencyRates();
+        return currencyResponse.rates();
     }
 }

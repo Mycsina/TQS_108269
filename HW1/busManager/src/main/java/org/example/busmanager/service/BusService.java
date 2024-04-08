@@ -40,18 +40,19 @@ public class BusService {
         return bus.getSeat_count();
     }
 
-    public void createReservation(Bus bus, String name, String phone, String email, int... seatNumbers) {
+    public Reservation createReservation(Bus bus, String name, String phone, String email, int... seatNumbers) {
         Reservation reservation = new Reservation().setName(name).setPhone(phone).setEmail(email);
-        createReservation(bus, reservation, seatNumbers);
+        return createReservation(bus, reservation, seatNumbers);
     }
 
-    public void createReservation(Bus bus, Reservation reservation, int... seatNumbers) {
+    public Reservation createReservation(Bus bus, Reservation reservation, int... seatNumbers) {
         reservation.setBus(bus);
         reservationService.saveReservation(reservation);
         if (getAvailableSeatNumbers(bus).size() < seatNumbers.length) {
             throw new IllegalArgumentException("Not enough available seats");
         }
         reservationService.addSeats(reservation, seatNumbers);
+        return reservation;
     }
 
     public List<Integer> getTakenSeatNumbers(Bus bus) {

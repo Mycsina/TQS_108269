@@ -1,11 +1,13 @@
 package org.example.busmanager.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.sql.Date;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -36,6 +38,9 @@ public class Route {
     @ManyToOne
     @JoinColumn(name = "to_city_id")
     private City to_city;
+
+    @Column(name = "price")
+    private Double price;
 
     @OneToMany(mappedBy = "route", orphanRemoval = true)
     @ToString.Exclude

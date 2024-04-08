@@ -1,7 +1,10 @@
 package org.example.busmanager.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -31,7 +34,7 @@ public class Reservation {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "reservation", orphanRemoval = true)
+    @OneToMany(mappedBy = "reservation", orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude
     private Set<Seat> seats = new LinkedHashSet<>();
 

@@ -5,6 +5,8 @@ import org.example.busmanager.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
@@ -33,5 +35,13 @@ public class ReservationService {
             seatService.reserveSeat(seatNumber, reservation);
         }
         return reservation;
+    }
+
+    public Reservation getReservationById(Long id) {
+        return reservationRepository.findById(id).orElseThrow();
+    }
+
+    public List<Reservation> getReservationBySameEmail(String email) {
+        return reservationRepository.findByEmail(email);
     }
 }
