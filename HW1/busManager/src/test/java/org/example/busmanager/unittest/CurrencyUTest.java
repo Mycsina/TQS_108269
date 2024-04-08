@@ -1,5 +1,7 @@
 package org.example.busmanager.unittest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.busmanager.CurrencyRequester;
 import org.example.busmanager.entity.CurrencyResponse;
 import org.example.busmanager.service.CurrencyService;
@@ -11,7 +13,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -20,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CurrencyUTest {
-    @Mock
+    @Mock(strictness = Mock.Strictness.LENIENT)
     private CurrencyRequester currencyRequester;
     @InjectMocks
     private CurrencyService currencyService;
@@ -54,6 +58,55 @@ class CurrencyUTest {
             currencyService.convertCurrency(100.0, "USD", "INVALID");
         } catch (NoSuchElementException e) {
             assertThat(e.getMessage(), is(equalTo("No value present")));
+        }
+    }
+
+    @Test
+    void whenGivenResponse_thenDeserialize() throws JsonProcessingException {
+        String response = """
+                {
+                    "disclaimer": "Usage subject to terms: https://openexchangerates.org/terms",
+                        "license": "https://openexchangerates.org/license",
+                        "timestamp": 1712595600,
+                        "base": "USD",
+                        "rates": {
+                            "BTC": 0.000013933904,
+                            "EUR": 0.921648,
+                            "GBP": 0.790618,
+                            "USD": 1
+                    }
+                    }""";
+        ObjectMapper objectMapper = new ObjectMapper();
+        CurrencyResponse parse = objectMapper.readValue(response, CurrencyResponse.class);
+        assertThat(parse.base(), is(equalTo("USD")));
+        assertThat(parse.rates().size(), is(equalTo(4)));
+        Map<String, Double> rates = parse.rates().stream().collect(Collectors.toMap(CurrencyResponse.Rate::getCurrency, CurrencyResponse.Rate::getRatio));
+        assertThat(rates.get("EUR"), is(equalTo(0.921648)));
+        assertThat(rates.get("GBP"), is(equalTo(0.790618)));
+        assertThat(rates.get("USD"), is(equalTo(1.0)));
+        assertThat(rates.get("BTC"), is(equalTo(0.000013933904)));
+    }
+
+    @Test
+    void whenGivenInvalidResponse_thenThrowException() {
+        String response = """
+                {
+                        "license": "https://openexchangerates.org/license",
+                        "timestamp": 1712595600,
+                        "base": "USD",
+                        "rates": {
+                            "BTC": 0.000013933904,
+                            "EUR": 0.921648,
+                            "GBP": 0.790618,
+                            "USD": 1
+                    }
+                    }""";
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            objectMapper.readValue(response, CurrencyResponse.class);
+            assertThat(true, is(equalTo(false)));
+        } catch (NullPointerException | JsonProcessingException e) {
+            assertThat(true, is(equalTo(true)));
         }
     }
 }
