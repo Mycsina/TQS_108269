@@ -21,12 +21,12 @@ public class CurrencyService {
         CurrencyResponse currencyResponse = requester.getLatestCurrencyRates();
         double fromRate = currencyResponse.rates().stream()
                 .filter(rate -> rate.getCurrency().equals(from))
-                .mapToDouble(CurrencyResponse.Rate::getRate)
+                .mapToDouble(CurrencyResponse.Rate::getRatio)
                 .findFirst()
                 .orElseThrow();
         double toRate = currencyResponse.rates().stream()
                 .filter(rate -> rate.getCurrency().equals(to))
-                .mapToDouble(CurrencyResponse.Rate::getRate)
+                .mapToDouble(CurrencyResponse.Rate::getRatio)
                 .findFirst()
                 .orElseThrow();
         return amount * toRate / fromRate;

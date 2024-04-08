@@ -10,20 +10,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class BusService {
     private final BusRepository busRepository;
     private final RouteService routeService;
-    private final SeatService seatService;
     private final ReservationService reservationService;
 
     @Autowired
-    public BusService(BusRepository busRepository, RouteService routeService, SeatService seatService, ReservationService reservationService) {
+    public BusService(BusRepository busRepository, RouteService routeService, ReservationService reservationService) {
         this.busRepository = busRepository;
         this.routeService = routeService;
-        this.seatService = seatService;
         this.reservationService = reservationService;
     }
 
@@ -37,7 +36,7 @@ public class BusService {
     }
 
     public int getMaximumSeatsCount(Bus bus) {
-        return bus.getSeat_count();
+        return bus.getSeatCount();
     }
 
     public Reservation createReservation(Bus bus, String name, String phone, String email, int... seatNumbers) {
@@ -48,8 +47,18 @@ public class BusService {
     public Reservation createReservation(Bus bus, Reservation reservation, int... seatNumbers) {
         reservation.setBus(bus);
         reservationService.saveReservation(reservation);
-        if (getAvailableSeatNumbers(bus).size() < seatNumbers.length) {
-            throw new IllegalArgumentException("Not enough available seats");
+        if (Arrays.stream(seatNumbers).anyMatch(seatNumber -> seatNumber > bus.getSeatCount())) {
+            throw new IllegalArgumentException("Seat number is out of range");
+        }
+        if (Arrays.stream(seatNumbers).anyMatch(seatNumber -> seatNumber < 1)) {
+            throw new IllegalArgumentException("Seat number is out of range");
+        }
+        if (Arrays.stream(seatNumbers).distinct().count() != seatNumbers.length) {
+            throw new IllegalArgumentException("Seat numbers should be unique");
+        }
+        List<Integer> takenSeats = getTakenSeatNumbers(bus);
+        if (Arrays.stream(seatNumbers).anyMatch(takenSeats::contains)) {
+            throw new IllegalArgumentException("Seat is already taken");
         }
         reservationService.addSeats(reservation, seatNumbers);
         return reservation;
@@ -67,7 +76,7 @@ public class BusService {
 
     public List<Integer> getAvailableSeatNumbers(Bus bus) {
         List<Integer> allSeats = new ArrayList<>();
-        for (int i = 1; i <= bus.getSeat_count(); i++) {
+        for (int i = 1; i <= bus.getSeatCount(); i++) {
             allSeats.add(i);
         }
         List<Integer> reservedSeats = getTakenSeatNumbers(bus);
@@ -77,24 +86,6 @@ public class BusService {
 
     public List<Bus> getBusesByRoute(Route route) {
         return busRepository.findByRoute(route);
-    }
-
-    public List<Bus> getBusesByDepartureCity(String city) {
-        List<Route> routes = routeService.getRoutesByDepartureCity(city);
-        List<Bus> result = new ArrayList<>();
-        for (Route route : routes) {
-            result.addAll(busRepository.findByRoute(route));
-        }
-        return result;
-    }
-
-    public List<Bus> getBusesByArrivalCity(String city) {
-        List<Route> routes = routeService.getRoutesByArrivalCity(city);
-        List<Bus> result = new ArrayList<>();
-        for (Route route : routes) {
-            result.addAll(busRepository.findByRoute(route));
-        }
-        return result;
     }
 
     public Bus getBusById(Long id) {

@@ -26,11 +26,11 @@ public class CurrencyRequester {
     public CurrencyResponse getLatestCurrencyRates() {
         WebClient client = WebClient.create();
         String base = "https://openexchangerates.org/api/latest.json";
-        String api_key = env.getProperty("open-exchange-rates.app-id");
+        String apiKey = env.getProperty("open-exchange-rates.app-id");
         log.info("Requesting currency rates from {}", base);
         return client
                 .get()
-                .uri(base + "?app_id=" + api_key)
+                .uri(base + "?app_id=" + apiKey)
                 .retrieve()
                 .bodyToMono(CurrencyResponse.class)
                 .block();

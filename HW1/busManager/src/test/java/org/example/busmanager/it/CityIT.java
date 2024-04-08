@@ -17,7 +17,7 @@ import static org.hamcrest.Matchers.hasItems;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest(CityController.class)
-public class CityIT {
+class CityIT {
     @MockBean
     private CityService cityService;
 

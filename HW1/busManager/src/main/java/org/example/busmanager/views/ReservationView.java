@@ -13,9 +13,9 @@ import java.util.List;
 
 @Route("reservation")
 public class ReservationView extends VerticalLayout implements HasUrlParameter<Long> {
-    ReservationService reservationService;
+    transient ReservationService reservationService;
 
-    Reservation redirectedReservation;
+    transient Reservation redirectedReservation;
     Grid<Reservation> reservationGrid = new Grid<>(Reservation.class);
 
     public ReservationView(ReservationService reservationService) {
@@ -56,7 +56,6 @@ public class ReservationView extends VerticalLayout implements HasUrlParameter<L
 
     @Override
     public void setParameter(BeforeEvent event, Long parameter) {
-        System.out.println("Parameter: " + parameter);
         redirectedReservation = reservationService.getReservationById(parameter);
         List<Reservation> reservations = reservationService.getReservationBySameEmail(redirectedReservation.getEmail());
         reservationGrid.setItems(reservations);

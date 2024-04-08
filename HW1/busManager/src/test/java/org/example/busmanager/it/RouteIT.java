@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.when;
 
 @WebMvcTest
-public class RouteIT {
+class RouteIT {
     @MockBean
     private RouteService routeService;
 

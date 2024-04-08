@@ -29,7 +29,7 @@ public class Bus {
     private String name;
 
     @Column(name = "seats")
-    private Integer seat_count;
+    private Integer seatCount;
 
     @OneToMany(mappedBy = "bus", orphanRemoval = true, fetch = FetchType.EAGER)
     @ToString.Exclude

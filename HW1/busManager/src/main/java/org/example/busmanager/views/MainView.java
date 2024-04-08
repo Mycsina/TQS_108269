@@ -24,6 +24,8 @@ import org.example.busmanager.entity.Reservation;
 import org.example.busmanager.service.BusService;
 import org.example.busmanager.service.CityService;
 import org.example.busmanager.service.CurrencyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -32,14 +34,16 @@ import java.util.List;
 @Route("")
 public class MainView extends VerticalLayout {
 
-    private final CityService cityService;
-    private final BusService busService;
-    private final CurrencyService currencyService;
+    private final transient CityService cityService;
+    private final transient BusService busService;
+    private final transient CurrencyService currencyService;
+
+    private final transient Logger logger = LoggerFactory.getLogger(MainView.class);
 
     Grid<Bus> busGrid = new Grid<>(Bus.class);
     ReservationForm reservationForm;
-    ComboBox<City> DepartureBox;
-    ComboBox<City> ArrivalBox;
+    ComboBox<City> departureBox;
+    ComboBox<City> arrivalBox;
     Button searchButton;
     ComboBox<CurrencyResponse.Rate> currencyBox;
 
@@ -113,6 +117,10 @@ public class MainView extends VerticalLayout {
     }
 
     static class Notifications {
+
+        private Notifications() {
+        }
+
         public static Notification defaultNotification(String message) {
             return Notification.show(message);
         }
@@ -165,9 +173,7 @@ public class MainView extends VerticalLayout {
                         .ifPresent(ui -> ui.navigate(ReservationView.class, reservationId));
             });
 
-            cancel.addClickListener(event -> {
-                Notifications.defaultNotification("Cancelled");
-            });
+            cancel.addClickListener(event -> Notifications.defaultNotification("Cancelled"));
 
             return new HorizontalLayout(reserve, cancel);
         }
@@ -175,20 +181,20 @@ public class MainView extends VerticalLayout {
 
     class CitySelector extends HorizontalLayout {
         public CitySelector() {
-            DepartureBox = new ComboBox<>("Departure city");
-            DepartureBox.addClassName("departure");
-            DepartureBox.setItems(cityService.getAllCities());
-            DepartureBox.setItemLabelGenerator(City::getName);
+            departureBox = new ComboBox<>("Departure city");
+            departureBox.addClassName("departure");
+            departureBox.setItems(cityService.getAllCities());
+            departureBox.setItemLabelGenerator(City::getName);
 
-            ArrivalBox = new ComboBox<>("Arrival city");
-            ArrivalBox.addClassName("arrival");
-            ArrivalBox.setItems(cityService.getAllCities());
-            ArrivalBox.setItemLabelGenerator(City::getName);
+            arrivalBox = new ComboBox<>("Arrival city");
+            arrivalBox.addClassName("arrival");
+            arrivalBox.setItems(cityService.getAllCities());
+            arrivalBox.setItemLabelGenerator(City::getName);
 
-            add(DepartureBox);
-            add(ArrivalBox);
+            add(departureBox);
+            add(arrivalBox);
 
-            searchButton = getButton(DepartureBox, ArrivalBox);
+            searchButton = getButton(departureBox, arrivalBox);
             add(searchButton);
 
             currencyBox = new ComboBox<>("Currency");
@@ -205,7 +211,7 @@ public class MainView extends VerticalLayout {
         }
 
         private Button getButton(ComboBox<City> cityComboBox, ComboBox<City> cityComboBox2) {
-            Button searchButton = new Button("Search");
+            searchButton = new Button("Search");
             searchButton.addClassName("search");
             searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
@@ -217,8 +223,7 @@ public class MainView extends VerticalLayout {
                 } else {
                     Notifications.errorNotification("Please select both departure and arrival cities");
                 }
-                System.out.println(cityComboBox.getValue() + " -> " + cityComboBox2.getValue());
-                System.out.println(cityComboBox.getValue().equals(cityComboBox2.getValue()));
+                logger.info("Searching for routes from {} to {}", cityComboBox.getValue().getName(), cityComboBox2.getValue().getName());
 
                 List<Bus> buses = busService.getBusByDepartureCityAndArrivalCity(cityComboBox.getValue().getName(), cityComboBox2.getValue().getName());
                 busGrid.setItems(buses);

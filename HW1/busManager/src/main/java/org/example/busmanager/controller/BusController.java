@@ -29,7 +29,7 @@ public class BusController {
 
     @PostMapping("/add")
     public ResponseEntity<Bus> addBus(@RequestParam String name, @RequestParam int seatCount, @RequestParam Long routeId) {
-        Bus bus = new Bus().setName(name).setSeat_count(seatCount);
+        Bus bus = new Bus().setName(name).setSeatCount(seatCount);
         busService.addBus(bus, routeId);
         logger.info("Bus added: {}", bus);
         return ResponseEntity.ok(bus);

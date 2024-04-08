@@ -2,18 +2,20 @@ package org.example.busmanager;
 
 import org.example.busmanager.entity.*;
 import org.example.busmanager.repository.*;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 @DataJpaTest
-public class RepositoryTests {
+class RepositoryTests {
     @Autowired
     private TestEntityManager entityManager;
 
@@ -34,7 +36,7 @@ public class RepositoryTests {
 
     @Test
     void whenFindBusById_thenReturnBus() {
-        Bus bus = new Bus().setName("65").setSeat_count(50);
+        Bus bus = new Bus().setName("65").setSeatCount(50);
         entityManager.persistAndFlush(bus);
         Bus found = busRepository.findById(bus.getId()).orElseThrow();
         assertThat(found, is(equalTo(bus)));
@@ -91,7 +93,7 @@ public class RepositoryTests {
 
     @Test
     void whenFindReservationsByBus_thenReturnReservations() {
-        Bus bus = new Bus().setName("65").setSeat_count(50);
+        Bus bus = new Bus().setName("65").setSeatCount(50);
         entityManager.persistAndFlush(bus);
         Reservation reservation = new Reservation().setBus(bus);
         entityManager.persistAndFlush(reservation);
@@ -111,7 +113,7 @@ public class RepositoryTests {
 
     @Test
     void whenFindSeatsByReservation_thenReturnSeats() {
-        Bus bus = new Bus().setName("65").setSeat_count(50);
+        Bus bus = new Bus().setName("65").setSeatCount(50);
         entityManager.persistAndFlush(bus);
         Reservation reservation = new Reservation().setBus(bus);
         entityManager.persistAndFlush(reservation);
@@ -129,5 +131,23 @@ public class RepositoryTests {
         } catch (Exception e) {
             assertThat(e.getMessage(), containsString("not-null property references a null or transient value"));
         }
+    }
+
+    @Disabled
+    @Test
+    void whenCreateReservation_thenConfirmSeatsAreReserved() {
+        Bus bus = new Bus().setName("65").setSeatCount(50);
+        entityManager.persistAndFlush(bus);
+        Reservation reservation = new Reservation().setBus(bus);
+        entityManager.persistAndFlush(reservation);
+        Seat seat = new Seat().setNumber(1).setReservation(reservation);
+        entityManager.persistAndFlush(seat);
+        List<Integer> takenSeats = new ArrayList<>();
+        for (Reservation res : bus.getReservations()) {
+            for (Seat s : res.getSeats()) {
+                takenSeats.add(s.getNumber());
+            }
+        }
+        assertThat(takenSeats, hasItem(seat.getNumber()));
     }
 }

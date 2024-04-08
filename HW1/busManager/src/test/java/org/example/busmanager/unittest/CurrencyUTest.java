@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class CurrencyUTest {
+class CurrencyUTest {
     @Mock
     private CurrencyRequester currencyRequester;
     @InjectMocks

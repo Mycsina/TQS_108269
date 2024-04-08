@@ -32,16 +32,15 @@ public class RouteController {
             @RequestParam("arrival") String arrival
     ) {
         List<Route> routes = routeService.getRoutesByDepartureCityAndArrivalCity(departure, arrival);
-        var response = ResponseEntity.ok(routes);
         return ResponseEntity.ok(routes);
     }
 
     @PostMapping("/add")
     public ResponseEntity<Route> addRoute(@RequestParam String departure, @RequestParam String arrival, @RequestParam String departureCity, @RequestParam String arrivalCity) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
-        Instant date_dept = LocalDateTime.parse(departure, formatter).toInstant(ZoneOffset.UTC);
-        Instant date_arr = LocalDateTime.parse(arrival, formatter).toInstant(ZoneOffset.UTC);
-        Route route = routeService.createRoute(date_dept, date_arr, departureCity, arrivalCity);
+        Instant dateDept = LocalDateTime.parse(departure, formatter).toInstant(ZoneOffset.UTC);
+        Instant dateArr = LocalDateTime.parse(arrival, formatter).toInstant(ZoneOffset.UTC);
+        Route route = routeService.createRoute(dateDept, dateArr, departureCity, arrivalCity);
         logger.info("Route added: {}", route);
         return ResponseEntity.ok(route);
     }

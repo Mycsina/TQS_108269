@@ -1,7 +1,10 @@
 package org.example.busmanager.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -30,11 +33,11 @@ public class City {
 
     @OneToMany(mappedBy = "from_city", orphanRemoval = true)
     @ToString.Exclude
-    private Set<Route> departing_routes = new LinkedHashSet<>();
+    private Set<Route> departingRoutes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "to_city", orphanRemoval = true)
     @ToString.Exclude
-    private Set<Route> arriving_routes = new LinkedHashSet<>();
+    private Set<Route> arrivingRoutes = new LinkedHashSet<>();
 
     @Override
     public final boolean equals(Object o) {
