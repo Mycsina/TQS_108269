@@ -2,11 +2,12 @@ package org.example.busmanager.controller;
 
 import org.example.busmanager.entity.Route;
 import org.example.busmanager.service.RouteService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -17,6 +18,8 @@ import java.util.List;
 @RestController
 public class RouteController {
     private final RouteService routeService;
+
+    private final Logger logger = LoggerFactory.getLogger(RouteController.class);
 
     @Autowired
     public RouteController(RouteService routeService) {
@@ -38,8 +41,8 @@ public class RouteController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
         Instant date_dept = LocalDateTime.parse(departure, formatter).toInstant(ZoneOffset.UTC);
         Instant date_arr = LocalDateTime.parse(arrival, formatter).toInstant(ZoneOffset.UTC);
-
         Route route = routeService.createRoute(date_dept, date_arr, departureCity, arrivalCity);
+        logger.info("Route added: {}", route);
         return ResponseEntity.ok(route);
     }
 }
