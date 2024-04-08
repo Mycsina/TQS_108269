@@ -25,37 +25,36 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class BusUTest {
-    @Mock(strictness = Mock.Strictness.LENIENT)
+    @Mock
     private BusRepository busRepository;
-    @Mock(strictness = Mock.Strictness.LENIENT)
+    @Mock
     private ReservationRepository reservationRepository;
     @Mock
     private RouteRepository routeRepository;
     @Mock
     private SeatRepository seatRepository;
-    @Mock(strictness = Mock.Strictness.LENIENT)
+    @Mock
     private ReservationService reservationService;
     @InjectMocks
     private BusService busService;
 
     @BeforeEach
     public void setUp() {
-        Bus bus = new Bus().setName("Bus1").setSeat_count(5);
-
-        when(busRepository.findById(1L)).thenReturn(java.util.Optional.of(bus));
-        when(busRepository.findById(-1L)).thenThrow(new NoSuchElementException());
-        when(reservationService.saveReservation(any(Reservation.class))).then(returnsFirstArg());
     }
 
     @Test
     void whenFindBusById_thenReturnBus() {
-        Bus bus = busService.getBusById(1L);
-        assertThat(bus.getName(), is(equalTo("Bus1")));
+        Bus bus = new Bus().setName("Bus1").setSeat_count(5);
+        when(busRepository.findById(1L)).thenReturn(java.util.Optional.of(bus));
+
+        Bus found = busService.getBusById(1L);
+        assertThat(found.getName(), is(equalTo("Bus1")));
         verify(busRepository, times(1)).findById(1L);
     }
 
     @Test
     void whenInvalidId_thenReturnNull() {
+        when(busRepository.findById(-1L)).thenThrow(new NoSuchElementException());
         try {
             busService.getBusById(-1L);
         } catch (NoSuchElementException e) {
@@ -66,13 +65,18 @@ public class BusUTest {
 
     @Test
     void whenNoAvailableSeats_thenFailReservation() {
-        Bus bus = busService.getBusById(1L);
+        Bus bus = new Bus().setName("Bus1").setSeat_count(5);
+        when(busRepository.findById(1L)).thenReturn(java.util.Optional.of(bus));
+        when(reservationService.saveReservation(any(Reservation.class))).then(returnsFirstArg());
+
+
+        Bus found = busService.getBusById(1L);
         Reservation reservation = new Reservation()
                 .setName("John")
                 .setPhone("123456789")
                 .setEmail("text@example.com");
         try {
-            busService.createReservation(bus, reservation, 1, 2, 3, 4, 5, 6);
+            busService.createReservation(found, reservation, 1, 2, 3, 4, 5, 6);
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage(), is(equalTo("Not enough available seats")));
         }
@@ -80,12 +84,16 @@ public class BusUTest {
 
     @Test
     void whenAvailableSeats_thenCreateReservation() {
-        Bus bus = busService.getBusById(1L);
+        Bus bus = new Bus().setName("Bus1").setSeat_count(5);
+        when(busRepository.findById(1L)).thenReturn(java.util.Optional.of(bus));
+        when(reservationService.saveReservation(any(Reservation.class))).then(returnsFirstArg());
+
+        Bus found = busService.getBusById(1L);
         Reservation reservation = new Reservation()
                 .setName("John")
                 .setPhone("123456789")
                 .setEmail("test@example.com");
-        busService.createReservation(bus, reservation, 1, 2, 3, 4, 5);
+        busService.createReservation(found, reservation, 1, 2, 3, 4, 5);
         verify(reservationService, times(1)).saveReservation(any(Reservation.class));
     }
 }

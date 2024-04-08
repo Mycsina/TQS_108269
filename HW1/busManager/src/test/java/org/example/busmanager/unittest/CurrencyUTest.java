@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CurrencyUTest {
-    @Mock(strictness = Mock.Strictness.LENIENT)
+    @Mock
     private CurrencyRequester currencyRequester;
     @InjectMocks
     private CurrencyService currencyService;
