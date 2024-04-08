@@ -19,6 +19,7 @@ import java.time.Duration;
 @Configuration
 @EnableCaching
 public class EhcacheConfig {
+
     @Bean
     public CacheManager createCacheWithinManager() {
         // creation of cache configuration

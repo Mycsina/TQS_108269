@@ -30,6 +30,7 @@ public class CityController {
     public ResponseEntity<City> addCity(@RequestParam String name, @RequestParam String country) {
         City city = new City().setName(name).setCountry(country);
         cityService.addCity(city);
+        log.info("City added: {}", city);
         return ResponseEntity.ok(city);
     }
 }
